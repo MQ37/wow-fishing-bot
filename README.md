@@ -3,6 +3,7 @@
 - saved some money on gametime (bought with gold from fishing)
 - code sucks and I am lazy to rewrite (not playing WoW anymore, so it's pointless for me)
 - **only for WINDOWS**
+- **only using computer vision (isn't touching wow processes)**
 - web interface runs on 0.0.0.0:5000 (can be accessed from local network)
 
 # How to run
@@ -21,6 +22,7 @@
 * Web interface
 * Computer Vision used for detecting objects
 * Keeps track of number of catches
+- Human like mouse movements
 - PC shutdown timer (hours or catches)
 - Game videostream via web interface
 
