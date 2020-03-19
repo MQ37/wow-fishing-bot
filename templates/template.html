@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <script src={{ url_for("static", filename="jquery.min.js")}}></script>
+  </head>
+  <body>
+    Video Stream: <a href="/live">Stream</a><br>
+    You can connect to this site from your phone on the same network (Wi-Fi): {{ip}}:5000<br>
+    <hr>
+    Status: <label id="status">{{is_ready}}</label><br>
+    <hr>
+    <table border="1px solid black">
+      <tr><td>Margin</td><td>Bobber Threshold</td></tr>
+      <tr>
+        <td id="margin_c_b">{{margin_c_b}}</td>
+        <td id="bobber_threshold">{{bobber_threshold}}</td>
+      </tr>
+    </table>
+    <hr>
+    Margin between cursor and bobber (0 -> 10): <input type="number" name="margin_c_b"><br>
+    Bobber detection threshold (0 -> 1): <input type="number" name="bobber_threshold"><br>
+    Change config: <button class="action" name="change_config">Change</button><br>
+    <hr>
+    Select Bobber ROI: <button class="action" name="bobber_roi">Screenshot</button><br>
+    Select Bobber Template: <button class="action" name="bobber_template">Screenshot</button><br>
+    Create hand cursor image: <button class="action" name="hand_cursor_im">Create</button><br>
+    Create fishing cursor image: <button class="action" name="fishing_cursor_im">Create</button><br>
+    <hr>
+    Start fishing: <button class="action" name="start">Start</button><br>
+    Stop fishing: <button class="action" name="stop">Stop</button><br>
+    <hr>
+    Limit Item: <input type="text" id="limit_item"> Limit Count: <input type="text" id="limit_count"> <button class="action" name="limit">Limit Count</button><br>
+    Limit Time (Hours): <input type="text" id="limit_time"> <button class="action" name="limit">Limit Time</button><br>
+    <label id="limit_status"></label>
+    <hr>
+    Save Settings: <button class="action" name="save">Save</button><br>
+    Load Settings: <button class="action" name="load">Load</button><br>
+    <hr>
+    Debug Button: <button class="action" name="debug">Debug</button><br>
+    Alt - Tab: <button class="action" name="alt_tab">ALT-TAB</button><br>
+    Hit Enter: <button class="action" name="hit_enter">Hit Enter</button><br>
+    Shutdown: <button class="action" name="shutdown">SHUTDOWN</button>
+    <hr>
+    <div id="item_list"></div>
+  </body>
+
+  <script>
+
+  function get_item_list(){
+
+    $.post("", {"action": "get_item_list"})
+    .done(function(data, status){
+        data = JSON.parse(data)
+        time = data["time"]
+        delete data["time"]
+        total = 0
+        for(el in data){
+          total += data[el]
+        }
+        keys = Object.keys(data)
+        $("#item_list").html("")
+        keys.forEach(function(i) {
+          if(total == 0){
+            $("#item_list").html( $("#item_list").html() + i + ": " + data[i] + " | " + (data[i] / time).toFixed(2) + " per minute" + " | Rate: " + 0 + "<br>" )
+          }else if(time == 0){
+            $("#item_list").html( $("#item_list").html() + i + ": " + data[i] + " | " + 0 + " per minute" + " | Rate: " + (data[i] / total).toFixed(2) + "<br>" )
+          }else{
+            $("#item_list").html( $("#item_list").html() + i + ": " + data[i] + " | " + (data[i] / time).toFixed(2) + " per minute" + " | Rate: " + (data[i] / total).toFixed(2) + "<br>" )
+          }
+        })
+    })
+
+    setTimeout(get_item_list, 10000)
+
+  }
+  get_item_list()
+
+  $(".action").click(function(){
+
+    if($(this).attr("name") == "change_config"){
+
+        $("#margin_c_b").html($("input[name=margin_c_b]").val())
+        $("#bobber_threshold").html($("input[name=bobber_threshold]").val())
+
+        $.post("", {"action": $(this).attr("name"),
+         "config": {"margin_c_b": $("input[name=margin_c_b]").val(),
+          "bobber_threshold": $("input[name=bobber_threshold]").val(),}
+         })
+
+        .fail(function(data, status){
+          $("#status").html("Error").css("color", "red")
+        })
+        .done(function(data, status){
+          data = JSON.parse(data)
+          $("#status").html(data["message"]).css("color", data["color"])
+        })
+
+    }else if($(this).attr("name") == "limit"){
+
+        item = $("#limit_item").val()
+        count = $("#limit_count").val()
+        time = $("#limit_time").val()
+
+        $.post("", {"action": $(this).attr("name"),
+                    "item": item,
+                    "count": count,
+                    "time": time
+         })
+
+        .fail(function(data, status){
+          $("#status").html("Error").css("color", "red")
+        })
+        .done(function(data, status){
+          data = JSON.parse(data)
+          $("#status").html(data["message"]).css("color", data["color"])
+        })
+
+    }else{
+
+        $.post("", {"action": $(this).attr("name")})
+        .fail(function(data, status){
+          $("#status").html("Error").css("color", "red")
+        })
+        .done(function(data, status){
+          data = JSON.parse(data)
+          $("#status").html(data["message"]).css("color", data["color"])
+        })
+
+    }
+
+  })
+
+  </script>
+</html>
