@@ -22,7 +22,6 @@ class Bot():
     bobber_template = None
 
     item_list = {
-                "Total": 0,
                 "Failed": 0,
                 "Successful": 0,
                 }
@@ -357,7 +356,6 @@ class Bot():
         return False
 
     def fishing_failed(self):
-        self.item_list["Total"] += 1
         self.item_list["Failed"] += 1
         self.detach_fishing()
 
@@ -425,7 +423,6 @@ def main():
                         pg.moveRel(None, int(bot.bobber_template.shape[0] / 2) * -0.9, duration=0.1e-1 + np.random.random() * 0.5)
                         pg.click()
                         # Log item
-                        bot.item_list["Total"] += 1
                         bot.item_list["Successful"] += 1
                         time.sleep(1.8)
                 except Exception as e:
