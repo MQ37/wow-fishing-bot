@@ -22,6 +22,7 @@
 * Computer Vision used for detecting objects
 * Keeps track of number of catches
 - PC shutdown timer (hours or catches)
+- Game videostream via web interface
 
 # License:
 Do whatever you want with this code :)
