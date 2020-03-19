@@ -24,5 +24,8 @@
 - PC shutdown timer (hours or catches)
 - Game videostream via web interface
 
+# Tips
+- you can forward port for this bot and thus can be accessed from internet
+
 # License:
 Do whatever you want with this code :)
